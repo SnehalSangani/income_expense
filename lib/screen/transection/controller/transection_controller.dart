@@ -22,6 +22,10 @@ class Transactioncontroller extends GetxController {
     Dbhelper dbhelper = Dbhelper();
     transectionlist.value = await dbhelper.decendingfilter();
   }
+  Future<void> readassending() async {
+    Dbhelper dbhelper = Dbhelper();
+    transectionlist.value = await dbhelper.assending();
+  }
 
   void deletetransaction(int id) {
     Dbhelper dbhelper = Dbhelper();
@@ -48,5 +52,26 @@ class Transactioncontroller extends GetxController {
     readtransection();
   }
  Rx<DateTime> current = DateTime.now().obs;
- // Rx<DateTime> current = DateTime.now().obs;
+  Rx<DateTime> date=DateTime.now().obs;
+  Rx<DateTime> Date=DateTime.now().obs;
+
+  RxList<String> category=<String>[
+    "💲 Salary",
+    "🍴 Food",
+    "📱 Recharge",
+    "⛽ Category",
+    "🏠 Home Rent",
+    "🎓 Education",
+    "🍴 Glocery",
+    "🛍️ Shopping",
+    "🏥 Health Care",
+    "✈ Travel",
+  ].obs;
+  var selectcategory="⛽ Category".obs;
+  RxList<String> paytype=<String>[
+    "💸 Cash",
+    "📲 Online",
+  ].obs;
+  var selectpay="💸 Cash".obs;
+
 }

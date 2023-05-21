@@ -12,16 +12,21 @@ class incomescreen extends StatefulWidget {
 }
 
 class _incomescreenState extends State<incomescreen> {
+  Transactioncontroller transactioncontroller =
+  Get.put(Transactioncontroller());
+
   TextEditingController txtcate = TextEditingController();
   TextEditingController txtamount = TextEditingController();
   TextEditingController txtnote = TextEditingController();
   TextEditingController txtpaytype = TextEditingController();
   TextEditingController txtstatus = TextEditingController();
-  TextEditingController txtdate = TextEditingController(text: "Date");
+  TextEditingController txtdate = TextEditingController();
   TextEditingController txttime = TextEditingController(
-      text: "${TimeOfDay.now().hour}:${TimeOfDay.now().minute}");
-  Transactioncontroller transactioncontroller =
-      Get.put(Transactioncontroller());
+      text: "${TimeOfDay
+          .now()
+          .hour}:${TimeOfDay
+          .now()
+          .minute}");
 
   @override
   void initState() {
@@ -33,6 +38,10 @@ class _incomescreenState extends State<incomescreen> {
 
   @override
   Widget build(BuildContext context) {
+    txtdate = TextEditingController(
+        text:
+        '${transactioncontroller.current.value.day}/${transactioncontroller
+            .current.value.month}/${transactioncontroller.current.value.year}');
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -49,36 +58,38 @@ class _incomescreenState extends State<incomescreen> {
                 SizedBox(
                   height: 20,
                 ),
-                InkWell(
-                  onTap: () {
-                    Get.defaultDialog(
-                        content: GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  mainAxisSpacing: 10,
-                                  crossAxisSpacing: 10,
-                                  crossAxisCount: 3),
-                          itemBuilder: (context, index) => categoryList[index],
-                          shrinkWrap: true,
-                          itemCount: 6,
+                Obx(() =>
+                    Container(
+                      height: 60,
+                      width: 393,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.black),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownButton(items: transactioncontroller
+                            .category
+                            .map(
+                              (element) =>
+                              DropdownMenuItem(
+                                  child: Text(element), value: element),
+                        )
+                            .toList(),
+                          onChanged: (value) {
+                            transactioncontroller.selectcategory.value = value!;
+                          },
+                          icon: Padding(
+                            padding: const EdgeInsets.only(left: 230),
+                            child: Icon(
+                              Icons.keyboard_arrow_down_outlined,
+                              color: Colors.black,
+                            ),
+                          ),
+                          value: transactioncontroller.selectcategory.value,
                         ),
-                        title: 'Category');
-                  },
-                  child: Container(
-                    height: 65,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text('Category',
-                          style:
-                              TextStyle(color: Colors.black54, fontSize: 17)),
-                    ),
-                  ),
                 ),
                 SizedBox(
                   height: 20,
@@ -105,42 +116,69 @@ class _incomescreenState extends State<incomescreen> {
                 SizedBox(
                   height: 20,
                 ),
-                TextField(
-                  controller: txtpaytype,
-                  decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(),
-                      border: OutlineInputBorder(),
-                      label: Text("Paytype"),
-                      fillColor: Colors.black),
+                Obx(() =>
+                    Container(
+                      height: 60,
+                      width: 393,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.black),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownButton(items: transactioncontroller
+                            .paytype
+                            .map(
+                              (element) =>
+                              DropdownMenuItem(
+                                  child: Text(element), value: element),
+                        )
+                            .toList(),
+                          onChanged: (value) {
+                            transactioncontroller.selectpay.value = value!;
+                          },
+                          icon: Padding(
+                            padding: const EdgeInsets.only(left: 270),
+                            child: Icon(
+                              Icons.keyboard_arrow_down_outlined,
+                              color: Colors.black,
+                            ),
+                          ),
+                          value: transactioncontroller.selectpay.value,
+                        ),
+                      ),
+                    ),
                 ),
                 SizedBox(
                   height: 20,
                 ),
-                TextField(
-                  controller: txtdate,
-                  decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () async => transactioncontroller
-                            .current.value = (await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2012),
-                          lastDate: DateTime(2122),
-                        ))!,
-                        icon: Icon(Icons.calendar_month),
+                Container(
+                  height: 60,
+                  width: 393,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 1),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Obx(() =>
+                       Text("${transactioncontroller.current.value.day}/${transactioncontroller
+                              .current.value.month}/${transactioncontroller.current.value.year}"),
+                        ),
                       ),
-                      enabledBorder: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(),
-                      border: OutlineInputBorder(),
-                      label: Text("Date"),
 
-
-
-
-
-
-                      fillColor: Colors.black),
+                      IconButton(onPressed: () async {
+                        transactioncontroller.current.value =
+                        (await showDatePicker(context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2030)))!;
+                      }, icon: Icon(Icons.calendar_month))
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 20,
@@ -160,10 +198,9 @@ class _incomescreenState extends State<incomescreen> {
                       enabledBorder: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(),
                       border: OutlineInputBorder(),
-                      label: Text("Time"),
+
                       fillColor: Colors.black),
                 ),
-                Obx(() => Text("${transactioncontroller.current}")),
                 SizedBox(
                   height: 120,
                 ),
@@ -187,9 +224,10 @@ class _incomescreenState extends State<incomescreen> {
           Expanded(
             child: InkWell(
               onTap: () {
+                var a = transactioncontroller.selectcategory.value;
                 Dbhelper dbhelper = Dbhelper();
                 dbhelper.insertdata(
-                    category: txtcate.text,
+                    category: a,
                     amount: txtamount.text,
                     status: '1',
                     notes: txtnote.text,
@@ -197,23 +235,10 @@ class _incomescreenState extends State<incomescreen> {
                     time: txttime.text,
                     paytype: txtpaytype.text);
                 print(dbhelper.database);
-                int i = 0;
-                for (i = 0;
-                    i < transactioncontroller.transectionlist.length;
-                    i++) {
-                  int status = int.parse(
-                      transactioncontroller.transectionlist[i]['status']);
-                  if (status == 1) {
-                    int amount = int.parse(
-                        transactioncontroller.transectionlist[i]['amount']);
-                    transactioncontroller.total.value =
-                        transactioncontroller.total.value + amount;
-                    transactioncontroller.income.value =
-                        transactioncontroller.income.value + amount;
-                  }
-                }
+                sum();
                 print(
-                    '${transactioncontroller.total.value}==============================');
+                    '${transactioncontroller.total
+                        .value}==============================');
                 Get.back();
               },
               child: Container(
@@ -236,9 +261,10 @@ class _incomescreenState extends State<incomescreen> {
           Expanded(
             child: InkWell(
               onTap: () {
+                var a = transactioncontroller.selectcategory.value;
                 Dbhelper dbhelper = Dbhelper();
                 dbhelper.insertdata(
-                    category: txtcate.text,
+                    category: a,
                     amount: txtamount.text,
                     status: '0',
                     notes: txtnote.text,
@@ -248,8 +274,8 @@ class _incomescreenState extends State<incomescreen> {
                 print(dbhelper.database);
                 int i = 0;
                 for (i = 0;
-                    i < transactioncontroller.transectionlist.length;
-                    i++) {
+                i < transactioncontroller.transectionlist.length;
+                i++) {
                   int status = int.parse(
                       transactioncontroller.transectionlist[i]['status']);
                   if (status == 0) {
@@ -285,12 +311,22 @@ class _incomescreenState extends State<incomescreen> {
     );
   }
 
-  List<Widget> categoryList = [
-    CircleAvatar(child: Icon(Icons.add_call), radius: 30),
-    CircleAvatar(child: Icon(Icons.add_call), radius: 30),
-    CircleAvatar(child: Icon(Icons.add_call), radius: 30),
-    CircleAvatar(child: Icon(Icons.add_call), radius: 30),
-    CircleAvatar(child: Icon(Icons.add_call), radius: 30),
-    CircleAvatar(child: Icon(Icons.add_call), radius: 30),
-  ];
+  void sum() {
+    int i = 0;
+    for (i = 0; i < transactioncontroller.transectionlist.length; i++) {
+      int status = int.parse(
+          transactioncontroller.transectionlist[i]['status']);
+      if (status == 1) {
+        int amount = int.parse(
+            transactioncontroller.transectionlist[i]['amount']);
+        transactioncontroller.total.value =
+            transactioncontroller.total.value + amount;
+        transactioncontroller.income.value =
+            transactioncontroller.income.value + amount;
+
+        print("$amount ========================================== ");
+      }
+    }
+  }
+
 }

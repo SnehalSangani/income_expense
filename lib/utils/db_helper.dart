@@ -102,4 +102,11 @@ class Dbhelper {
     List<Map> list = await database!.rawQuery(sql);
     return list;
   }
+  Future<List<Map>> assending()
+  async {
+    database=await checkdb();
+    String sql ='SELECT * FROM incomeexpense ORDER BY id';
+    List<Map> list=await database!.rawQuery(sql);
+    return list;
+  }
 }
