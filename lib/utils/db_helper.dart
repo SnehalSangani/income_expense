@@ -109,4 +109,13 @@ class Dbhelper {
     List<Map> list=await database!.rawQuery(sql);
     return list;
   }
+
+  Future<List<Map>> payTypeFilter({required payType})
+  async {
+    database = await checkdb();
+    String sql ="SELECT * FROM incomeexpense WHERE paytype='${payType}'";
+    List<Map> list = await database!.rawQuery(sql);
+    print(list);
+    return list;
+  }
 }

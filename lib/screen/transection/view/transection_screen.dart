@@ -58,10 +58,21 @@ class _transectionscreenState extends State<transectionscreen> {
                                 onPressed: () async {
                                   transactioncontroller.date.value =
                                       (await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime(2000),
-                                          lastDate: DateTime(2030)))!;
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime(2030),
+                                    builder: (context, child) => Theme(
+                                        data: Theme.of(context).copyWith(
+                                            colorScheme: ColorScheme.light(
+                                                primary: Colors.black54,
+                                            onPrimary: Colors.white,
+                                            onSurface: Colors.black),textButtonTheme: TextButtonThemeData(
+                                          style: TextButton.styleFrom(primary: Colors.black)
+                                        )),
+
+                                        child: child!),
+                                  ))!;
                                 },
                                 child: Obx(
                                   () => Text(
@@ -80,7 +91,18 @@ class _transectionscreenState extends State<transectionscreen> {
                                           context: context,
                                           initialDate: DateTime.now(),
                                           firstDate: DateTime(2000),
-                                          lastDate: DateTime(2030)))!;
+                                          lastDate: DateTime(2030),
+                                        builder: (context, child) => Theme(
+                                            data: Theme.of(context).copyWith(
+                                                colorScheme: ColorScheme.light(
+                                                    primary: Colors.black54,
+                                                    onPrimary: Colors.white,
+                                                    onSurface: Colors.black),textButtonTheme: TextButtonThemeData(
+                                                style: TextButton.styleFrom(primary: Colors.black)
+                                            )),
+
+                                            child: child!),
+                                      ))!;
                                 },
                                 child: Obx(
                                   () => Text(
@@ -180,14 +202,14 @@ class _transectionscreenState extends State<transectionscreen> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: InkWell(
                                     onTap: () {
-                                      transactioncontroller.readCategory();
+                                      transactioncontroller.cashfilter('💸 Cash');
                                       Get.back();
                                     },
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('Decending',
+                                        Text('Cash',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w500,
                                                 letterSpacing: 1)),
@@ -201,14 +223,14 @@ class _transectionscreenState extends State<transectionscreen> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: InkWell(
                                     onTap: () {
-                                      transactioncontroller.readassending();
+                                      transactioncontroller.cashfilter('📲 Online');
                                       Get.back();
                                     },
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('Assending',
+                                        Text('Online',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w500,
                                                 letterSpacing: 1)),
@@ -239,7 +261,7 @@ class _transectionscreenState extends State<transectionscreen> {
             itemBuilder: (context, index) => transactionBox(
               controller.transectionlist[index]['id'],
               controller.transectionlist[index]['category'],
-              controller.transectionlist[index]['notes'],
+              controller.transectionlist[index]['paytype'],
               controller.transectionlist[index]['amount'],
               controller.transectionlist[index]['status'],
               index,
@@ -251,11 +273,11 @@ class _transectionscreenState extends State<transectionscreen> {
     );
   }
 
-  Widget transactionBox(int id, String category, String notes, String amount,
+  Widget transactionBox(int id, String category, String paytype, String amount,
       String status, int index) {
     int s1 = int.parse(status);
     return Container(
-      height: 100,
+      height: 90,
       width: double.infinity,
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -286,7 +308,7 @@ class _transectionscreenState extends State<transectionscreen> {
               SizedBox(
                 height: 2,
               ),
-              Text('$notes',
+              Text('$paytype',
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
@@ -321,30 +343,38 @@ class _transectionscreenState extends State<transectionscreen> {
                     text: '${controller.transectionlist[index]['notes']}');
                 Get.defaultDialog(
                   title: 'Update',
-                  content: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Obx(() =>
-                            Container(
+                  content: Container(
+                    height: 300,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Obx(
+                            () => Container(
                               height: 60,
                               width: 270,
                               decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: Colors.grey),
+                                border:
+                                    Border.all(width: 1, color: Colors.grey),
                                 borderRadius: BorderRadius.circular(3),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: DropdownButton(items: transactioncontroller
-                                    .category
-                                    .map(
-                                      (element) =>
-                                      DropdownMenuItem(
-                                          child: Text(element), value: element),
-                                )
-                                    .toList(),
+                                child: DropdownButton(
+                                  onTap: () {
+                                    var a = transactioncontroller
+                                        .selectcategory.value;
+                                  },
+                                  items: transactioncontroller.category
+                                      .map(
+                                        (element) => DropdownMenuItem(
+                                            child: Text(element),
+                                            value: element),
+                                      )
+                                      .toList(),
                                   onChanged: (value) {
-                                    transactioncontroller.selectcategory.value = value!;
+                                    transactioncontroller.selectcategory.value =
+                                        value!;
                                   },
                                   icon: Padding(
                                     padding: const EdgeInsets.only(left: 110),
@@ -353,54 +383,61 @@ class _transectionscreenState extends State<transectionscreen> {
                                       color: Colors.black,
                                     ),
                                   ),
-                                  value: transactioncontroller.selectcategory.value,
+                                  value: transactioncontroller
+                                      .selectcategory.value,
                                 ),
                               ),
                             ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextField(
-                          controller: txtamount,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              label: Text("Amount"),
-                              fillColor: Colors.black),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextField(
-                          controller: txtnote,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              label: Text("Note"),
-                              fillColor: Colors.black),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Obx(() =>
-                            Container(
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            controller: txtamount,
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(),
+                                focusedBorder: OutlineInputBorder(),
+                                labelStyle: TextStyle(color: Colors.black),
+                                label: Text("Amount"),
+                                fillColor: Colors.black),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            controller: txtnote,
+                            decoration: InputDecoration(
+                                label: Text("Note"),
+                                enabledBorder: OutlineInputBorder(),
+                                focusedBorder: OutlineInputBorder(),
+                                labelStyle: TextStyle(color: Colors.black),
+                                fillColor: Colors.black),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Obx(
+                            () => Container(
                               height: 60,
                               width: 270,
                               decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: Colors.grey),
+                                border:
+                                    Border.all(width: 1, color: Colors.grey),
                                 borderRadius: BorderRadius.circular(3),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: DropdownButton(items: transactioncontroller
-                                    .paytype
-                                    .map(
-                                      (element) =>
-                                      DropdownMenuItem(
-                                          child: Text(element), value: element),
-                                )
-                                    .toList(),
+                                child: DropdownButton(
+                                  items: transactioncontroller.paytype
+                                      .map(
+                                        (element) => DropdownMenuItem(
+                                            child: Text(element),
+                                            value: element),
+                                      )
+                                      .toList(),
                                   onChanged: (value) {
-                                    transactioncontroller.selectpay.value = value!;
+                                    transactioncontroller.selectpay.value =
+                                        value!;
                                   },
                                   icon: Padding(
                                     padding: const EdgeInsets.only(left: 150),
@@ -413,107 +450,124 @@ class _transectionscreenState extends State<transectionscreen> {
                                 ),
                               ),
                             ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextField(
-                          controller: txtdate,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              label: Text("Date"),
-                              fillColor: Colors.black),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextField(
-                          controller: txttime,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              label: Text("Time"),
-                              fillColor: Colors.black),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          height: 100,
-                          width: double.infinity,
-                          decoration: BoxDecoration(),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    Dbhelper dbhelper = Dbhelper();
-                                    int status = 1;
-                                    String cate = txtcate.text;
-                                    String amt = txtamount.text;
-                                    String note = txtnote.text;
-                                    String date = txtdate.text;
-                                    String time = txttime.text;
-                                    String paytype = txtpaytype.text;
-                                    controller.updatetransaction(cate, amt,
-                                        status, note, date, time, paytype, id);
-                                    controller.readtransection();
-                                    Get.back();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.all(10),
-                                    height: 50,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text('Income',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w500,
-                                            letterSpacing: 2)),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    Dbhelper dbhelper = Dbhelper();
-                                    int status = 0;
-                                    String cate = txtcate.text;
-                                    String amt = txtamount.text;
-                                    String note = txtnote.text;
-                                    String date = txtdate.text;
-                                    String time = txttime.text;
-                                    String paytype = txtpaytype.text;
-                                    controller.updatetransaction(cate, amt,
-                                        status, note, date, time, paytype, id);
-                                    controller.readtransection();
-                                    Get.back();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.all(10),
-                                    height: 50,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text('Expanse',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w500,
-                                            letterSpacing: 2)),
-                                  ),
-                                ),
-                              ),
-                            ],
                           ),
-                        )
-                      ],
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            controller: txtdate,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                label: Text("Date"),
+                                fillColor: Colors.black),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            controller: txttime,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                label: Text("Time"),
+                                fillColor: Colors.black),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: 100,
+                            width: double.infinity,
+                            decoration: BoxDecoration(),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      Dbhelper dbhelper = Dbhelper();
+                                      int status = 1;
+                                      String cate = transactioncontroller
+                                          .selectcategory.value;
+                                      String amt = txtamount.text;
+                                      String note = txtnote.text;
+                                      String date = txtdate.text;
+                                      String time = txttime.text;
+                                      String paytype = txtpaytype.text;
+                                      controller.updatetransaction(
+                                          cate,
+                                          amt,
+                                          status,
+                                          note,
+                                          date,
+                                          time,
+                                          paytype,
+                                          id);
+                                      controller.readtransection();
+                                      Get.back();
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.all(10),
+                                      height: 50,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text('Income',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              letterSpacing: 2)),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      Dbhelper dbhelper = Dbhelper();
+                                      int status = 0;
+                                      String cate = transactioncontroller
+                                          .selectcategory.value;
+                                      String amt = txtamount.text;
+                                      String note = txtnote.text;
+                                      String date = txtdate.text;
+                                      String time = txttime.text;
+                                      String paytype = txtpaytype.text;
+                                      controller.updatetransaction(
+                                          cate,
+                                          amt,
+                                          status,
+                                          note,
+                                          date,
+                                          time,
+                                          paytype,
+                                          id);
+                                      controller.readtransection();
+                                      Get.back();
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.all(10),
+                                      height: 50,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text('Expanse',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              letterSpacing: 2)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 );

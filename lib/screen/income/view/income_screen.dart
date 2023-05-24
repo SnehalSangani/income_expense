@@ -15,10 +15,8 @@ class _incomescreenState extends State<incomescreen> {
   Transactioncontroller transactioncontroller =
   Get.put(Transactioncontroller());
 
-  TextEditingController txtcate = TextEditingController();
   TextEditingController txtamount = TextEditingController();
   TextEditingController txtnote = TextEditingController();
-  TextEditingController txtpaytype = TextEditingController();
   TextEditingController txtstatus = TextEditingController();
   TextEditingController txtdate = TextEditingController();
   TextEditingController txttime = TextEditingController(
@@ -80,7 +78,7 @@ class _incomescreenState extends State<incomescreen> {
                             transactioncontroller.selectcategory.value = value!;
                           },
                           icon: Padding(
-                            padding: const EdgeInsets.only(left: 230),
+                            padding: const EdgeInsets.only(left: 200),
                             child: Icon(
                               Icons.keyboard_arrow_down_outlined,
                               color: Colors.black,
@@ -100,6 +98,7 @@ class _incomescreenState extends State<incomescreen> {
                       enabledBorder: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(),
                       label: Text("Amount"),
+                      labelStyle: TextStyle(color: Colors.black),
                       fillColor: Colors.black),
                 ),
                 SizedBox(
@@ -111,9 +110,11 @@ class _incomescreenState extends State<incomescreen> {
                       enabledBorder: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(),
                       label: Text("Note"),
+                      labelStyle: TextStyle(color: Colors.black),
                       fillColor: Colors.black),
                 ),
                 SizedBox(
+
                   height: 20,
                 ),
                 Obx(() =>
@@ -138,7 +139,7 @@ class _incomescreenState extends State<incomescreen> {
                             transactioncontroller.selectpay.value = value!;
                           },
                           icon: Padding(
-                            padding: const EdgeInsets.only(left: 270),
+                            padding: const EdgeInsets.only(left: 240),
                             child: Icon(
                               Icons.keyboard_arrow_down_outlined,
                               color: Colors.black,
@@ -166,7 +167,7 @@ class _incomescreenState extends State<incomescreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Obx(() =>
                        Text("${transactioncontroller.current.value.day}/${transactioncontroller
-                              .current.value.month}/${transactioncontroller.current.value.year}"),
+                              .current.value.month}/${transactioncontroller.current.value.year}",style: TextStyle(fontSize: 15),),
                         ),
                       ),
 
@@ -175,7 +176,17 @@ class _incomescreenState extends State<incomescreen> {
                         (await showDatePicker(context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(2000),
-                            lastDate: DateTime(2030)))!;
+                            lastDate: DateTime(2030),
+                          builder: (context, child) => Theme(
+                              data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                      primary: Colors.black54,
+                                      onPrimary: Colors.white,
+                                      onSurface: Colors.black),textButtonTheme: TextButtonThemeData(
+                                  style: TextButton.styleFrom(primary: Colors.black)
+                              )),
+
+                              child: child!),))!;
                       }, icon: Icon(Icons.calendar_month))
                     ],
                   ),
@@ -202,7 +213,7 @@ class _incomescreenState extends State<incomescreen> {
                       fillColor: Colors.black),
                 ),
                 SizedBox(
-                  height: 120,
+                  height: 95,
                 ),
                 Align(alignment: Alignment.bottomCenter, child: addButton()),
               ],
@@ -225,6 +236,7 @@ class _incomescreenState extends State<incomescreen> {
             child: InkWell(
               onTap: () {
                 var a = transactioncontroller.selectcategory.value;
+                var b = transactioncontroller.selectpay.value;
                 Dbhelper dbhelper = Dbhelper();
                 dbhelper.insertdata(
                     category: a,
@@ -233,7 +245,7 @@ class _incomescreenState extends State<incomescreen> {
                     notes: txtnote.text,
                     date: txtdate.text,
                     time: txttime.text,
-                    paytype: txtpaytype.text);
+                    paytype: b);
                 print(dbhelper.database);
                 sum();
                 print(
@@ -262,6 +274,7 @@ class _incomescreenState extends State<incomescreen> {
             child: InkWell(
               onTap: () {
                 var a = transactioncontroller.selectcategory.value;
+                var b=transactioncontroller.selectpay.value;
                 Dbhelper dbhelper = Dbhelper();
                 dbhelper.insertdata(
                     category: a,
@@ -270,7 +283,7 @@ class _incomescreenState extends State<incomescreen> {
                     notes: txtnote.text,
                     date: txtdate.text,
                     time: txttime.text,
-                    paytype: txtpaytype.text);
+                    paytype: b);
                 print(dbhelper.database);
                 int i = 0;
                 for (i = 0;

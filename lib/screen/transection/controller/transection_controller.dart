@@ -26,6 +26,12 @@ class Transactioncontroller extends GetxController {
     Dbhelper dbhelper = Dbhelper();
     transectionlist.value = await dbhelper.assending();
   }
+  Future<void> cashfilter(String payType)
+  async {
+    Dbhelper dbhelper=Dbhelper();
+    transectionlist.value = await dbhelper.payTypeFilter(payType: payType);
+    print(transectionlist);
+  }
 
   void deletetransaction(int id) {
     Dbhelper dbhelper = Dbhelper();
