@@ -118,4 +118,18 @@ class Dbhelper {
     print(list);
     return list;
   }
+  Future<List<Map>> totalIncome()
+  async {
+    database = await checkdb();
+    String sql = 'SELECT SUM(amount) FROM incomeexpense WHERE status=1';
+    List<Map> list = await database!.rawQuery(sql);
+    return list;
+  }
+  Future<List<Map>> totalExpanse()
+  async {
+    database = await checkdb();
+    String sql = 'SELECT SUM(amount) FROM incomeexpense WHERE status=0';
+    List<Map> list = await database!.rawQuery(sql);
+    return list;
+  }
 }

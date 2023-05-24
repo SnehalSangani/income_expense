@@ -248,6 +248,7 @@ class _incomescreenState extends State<incomescreen> {
                     paytype: b);
                 print(dbhelper.database);
                 sum();
+                transactioncontroller.totalincome();
                 print(
                     '${transactioncontroller.total
                         .value}==============================');
@@ -284,6 +285,7 @@ class _incomescreenState extends State<incomescreen> {
                     date: txtdate.text,
                     time: txttime.text,
                     paytype: b);
+                transactioncontroller.totalexpanse();
                 print(dbhelper.database);
                 int i = 0;
                 for (i = 0;

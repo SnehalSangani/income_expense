@@ -12,6 +12,12 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   Transactioncontroller controller = Get.put(Transactioncontroller());
   @override
+  void initState() {
+    super.initState();
+    controller.totalexpanse();
+    controller.totalincome();
+  }
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -96,7 +102,7 @@ class _HomescreenState extends State<Homescreen> {
         children: [
           Text('Total Balance',style: TextStyle(color: Colors.white,letterSpacing: 1,fontSize: 22,)),
 
-          Obx(() => Text('\$ ${controller.total.value}/-',style: TextStyle(color: Colors.white,letterSpacing: 2,fontSize: 22,fontWeight: FontWeight.w500))),
+          Obx(() => Text('\$ ${controller.tincome[0]['SUM(amount)']-controller.texpanse[0]['SUM(amount)']}/-',style: TextStyle(color: Colors.white,letterSpacing: 2,fontSize: 22,fontWeight: FontWeight.w500))),
         ],
       ),
     );
@@ -122,7 +128,7 @@ class _HomescreenState extends State<Homescreen> {
               children: [
                 Text('Total Income',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500)),
                 SizedBox(height: 10,),
-                Obx(() =>  Text('\$ ${controller.income.value}',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600))),
+                Obx(() =>  Text('\$ ${controller.tincome[0]['SUM(amount)']}',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600))),
               ],
             ),
           ),
@@ -142,7 +148,7 @@ class _HomescreenState extends State<Homescreen> {
               children: [
                 Text('Total Expense',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500)),
                 SizedBox(height: 10,),
-                Obx(() =>  Text('\$ ${controller.expense.value}',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600))),
+                Obx(() =>  Text('\$ ${controller.texpanse[0]['SUM(amount)']}',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600))),
               ],
             ),
           ),

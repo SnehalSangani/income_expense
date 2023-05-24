@@ -32,6 +32,20 @@ class Transactioncontroller extends GetxController {
     transectionlist.value = await dbhelper.payTypeFilter(payType: payType);
     print(transectionlist);
   }
+  RxList<Map> tincome=<Map>[].obs;
+  RxList<Map> texpanse=<Map>[].obs;
+  Future<void> totalincome()
+  async {
+    Dbhelper dbhelper=Dbhelper();
+  tincome.value=await dbhelper.totalIncome();
+  print(tincome);
+  }
+  Future<void> totalexpanse()
+  async {
+    Dbhelper dbhelper=Dbhelper();
+    texpanse.value=await dbhelper.totalExpanse();
+    print(texpanse);
+  }
 
   void deletetransaction(int id) {
     Dbhelper dbhelper = Dbhelper();
